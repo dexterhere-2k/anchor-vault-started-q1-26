@@ -110,11 +110,9 @@ pub struct Withdraw<'info> {
     #[account(mut)]
     pub user: Signer<'info>,
     #[account(
-        init,
-        payer = user,
+        mut,
         seeds = [b"state", user.key().as_ref()],
         bump,
-        space = VaultState::DISCRIMINATOR.len() + VaultState::INIT_SPACE
     )]
 pub vault_state: Account<'info, VaultState>,
     #[account(
@@ -128,7 +126,7 @@ pub vault_state: Account<'info, VaultState>,
 
 impl<'info> Withdraw<'info> {
     pub fn withdraw(&mut self, amount: u64) -> Result<()> {
-                let cpi_program = self.system_program.to_account_info();
+        let cpi_program = self.system_program.to_account_info();
 
         let cpi_accounts = Transfer {
             from: self.vault.to_account_info(),
